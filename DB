@@ -1,0 +1,42 @@
+DROP DATABASE IF EXISTS integrador_cac;
+CREATE DATABASE IF NOT EXISTS integrador_cac;
+USE integrador_cac;
+
+DROP TABLE IF EXISTS oradores;
+CREATE TABLE IF NOT EXISTS oradores(
+    id_orador INT(4) AUTO_INCREMENT,
+    nombre VARCHAR(45) NOT NULL,
+    apellido VARCHAR(45) NOT NULL,
+    mail VARCHAR(45) UNIQUE,
+    tema VARCHAR(30),
+    fecha_alta DATE,
+    PRIMARY KEY (id_orador)
+);
+
+-- Trigger para verificar la fecha_alta
+DELIMITER //
+CREATE TRIGGER before_insert_oradores
+BEFORE INSERT ON oradores
+FOR EACH ROW
+BEGIN
+    IF NEW.fecha_alta > CURDATE() THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'La fecha_alta no puede ser posterior a la fecha actual';
+    END IF;
+END;
+//
+DELIMITER ;
+
+INSERT INTO oradores (nombre, apellido, mail, tema, fecha_alta) VALUES 
+    ('Eduardo','Ghioldi','ghioldieduardo@example.com','Presentacion', '2023-02-15'),
+    ('Juan', 'Pérez', 'juan.perez@example.com', 'Inteligencia Artificial', '2023-01-01'),
+    ('Ana', 'Gómez', 'ana.gomez@example.com', 'Desarrollo Sostenible', '2023-02-15'),
+    ('Carlos', 'López', 'carlos.lopez@example.com', 'Ciberseguridad', '2023-03-10'),
+    ('María', 'Rodríguez', 'maria.rodriguez@example.com', 'Innovación Tecnológica', '2023-04-05'),
+    ('Pedro', 'Martínez', 'pedro.martinez@example.com', 'Energías Renovables', '2023-05-20'),
+    ('Laura', 'Fernández', 'laura.fernandez@example.com', 'Big Data', '2023-06-15'),
+    ('Miguel', 'González', 'miguel.gonzalez@example.com', 'Emprendimiento', '2023-07-01'),
+    ('Isabel', 'Díaz', 'isabel.diaz@example.com', 'Tecnologías Emergentes', '2023-08-12'),
+    ('Luis', 'Hernández', 'luis.hernandez@example.com', 'Transformación Digital', '2023-09-25'),
+    ('Elena', 'Sánchez', 'elena.sanchez@example.com', 'Innovación Educativa', '2023-09-30');
+
